@@ -41,10 +41,10 @@ class QuizCardWidget extends StatelessWidget {
               Container(
                 width: 40,
                 height: 40,
-                child: this.image,
+                child: image,
               ),
               Text(
-                this.title,
+                title,
                 style: GoogleFonts.notoSans(
                   color: AppColors.grey,
                   fontSize: 15,
@@ -57,7 +57,7 @@ class QuizCardWidget extends StatelessWidget {
                   Expanded(
                     flex: 5,
                     child: Text(
-                      '${this.done} de ${this.total}',
+                      '$done de $total',
                       style: GoogleFonts.notoSans(
                         fontSize: 11,
                         fontWeight: FontWeight.w400,

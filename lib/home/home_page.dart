@@ -1,8 +1,11 @@
-import 'package:DevQuiz/core/app_images.dart';
-import 'package:DevQuiz/home/widgets/level_button/level_button_widget.dart';
-import 'package:DevQuiz/home/widgets/quiz_card/quiz_card_widget.dart';
 import 'package:flutter/material.dart';
 
+import 'package:DevQuiz/core/app_colors.dart';
+
+import 'package:DevQuiz/home/home_controller.dart';
+import 'package:DevQuiz/home/home_state.dart';
+import 'package:DevQuiz/home/widgets/level_button/level_button_widget.dart';
+import 'package:DevQuiz/home/widgets/quiz_card/quiz_card_widget.dart';
 import 'package:DevQuiz/home/widgets/appbar/app_bar_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,10 +14,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final controller = HomeController();
+
+  @override
+  void initState() {
+    controller.init();
+
+    controller.stateNotifier.addListener(() {
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (controller.state != HomeState.SUCCESS)
+      return Scaffold(
+        body: Center(
+          child: Container(
+            width: 128,
+            height: 128,
+            child: CircularProgressIndicator(
+              strokeWidth: 10,
+              backgroundColor: AppColors.chartSecondary,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.purple),
+            ),
+          ),
+        ),
+      );
+
     return Scaffold(
-      appBar: AppBarWidget(),
+      appBar: AppBarWidget(
+        user: controller.user!,
+      ),
       body: Container(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -37,44 +70,16 @@ class _HomePageState extends State<HomePage> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
-                  children: [
-                    QuizCardWidget(
-                      title: 'Gerenciamento de Estado',
-                      image: Image.asset(AppImages.data),
-                      done: 3,
-                      total: 10,
-                    ),
-                    QuizCardWidget(
-                      title: 'Construindo Interfaces',
-                      image: Image.asset(AppImages.laptop),
-                      done: 10,
-                      total: 10,
-                    ),
-                    QuizCardWidget(
-                      title: 'Integração Nativa',
-                      image: Image.asset(AppImages.hierarchy),
-                      done: 9,
-                      total: 10,
-                    ),
-                    QuizCardWidget(
-                      title: 'Widgets do Flutter',
-                      image: Image.asset(AppImages.blocks),
-                      done: 5,
-                      total: 10,
-                    ),
-                    QuizCardWidget(
-                      title: 'Construindo Interfaces',
-                      image: Image.asset(AppImages.laptop),
-                      done: 10,
-                      total: 10,
-                    ),
-                    QuizCardWidget(
-                      title: 'Gerenciamento de Estado',
-                      image: Image.asset(AppImages.data),
-                      done: 3,
-                      total: 10,
-                    ),
-                  ],
+                  children: controller.quizzes!
+                      .map<QuizCardWidget>(
+                        (quiz) => QuizCardWidget(
+                          title: quiz.title,
+                          image: Image.asset(quiz.image),
+                          done: quiz.answeredQuestionsCount,
+                          total: quiz.questions.length,
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ],

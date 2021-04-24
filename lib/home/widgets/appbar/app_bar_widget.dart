@@ -6,7 +6,7 @@ import 'package:DevQuiz/home/widgets/score_card/score_card_widget.dart';
 class AppBarWidget extends PreferredSize {
   AppBarWidget()
       : super(
-          preferredSize: Size.fromHeight(250),
+          preferredSize: Size.fromHeight(240),
           child: Container(
             child: Stack(
               children: [

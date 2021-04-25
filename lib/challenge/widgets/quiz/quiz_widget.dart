@@ -1,12 +1,32 @@
-import 'package:DevQuiz/challenge/widgets/answer/answer_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:DevQuiz/core/app_text_styles.dart';
 
-class QuizWidget extends StatelessWidget {
-  final String title;
+import 'package:DevQuiz/shared/models/answer_model.dart';
+import 'package:DevQuiz/shared/models/question_model.dart';
 
-  QuizWidget({Key? key, required this.title}) : super(key: key);
+import 'package:DevQuiz/challenge/widgets/answer/answer_widget.dart';
+
+typedef OnChangeCallback = void Function(bool);
+
+class QuizWidget extends StatefulWidget {
+  final QuestionModel question;
+
+  final OnChangeCallback onChange;
+
+  QuizWidget({Key? key, required this.question, required this.onChange})
+      : super(key: key);
+
+  @override
+  _QuizWidgetState createState() => _QuizWidgetState();
+}
+
+class _QuizWidgetState extends State<QuizWidget> {
+  int selectedIndex = -1;
+
+  List<AnswerModel> get answers => widget.question.answers;
+
+  AnswerModel answer(int index) => widget.question.answers[index];
 
   @override
   Widget build(BuildContext context) {
@@ -16,36 +36,28 @@ class QuizWidget extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              this.title,
+              widget.question.question,
               style: AppTextStyles.heading,
             ),
             SizedBox(height: 24),
             Column(
-              children: [
-                AnswerWidget(
-                  answer: 'Kit de desenvolvimento de interface do usuário',
-                  isCorrect: false,
-                  isSelected: false,
-                ),
-                AnswerWidget(
-                  answer:
-                      'Possibilita a criação de aplicativos compilados nativamente',
-                  isCorrect: true,
-                  isSelected: true,
-                ),
-                AnswerWidget(
-                  answer: 'Acho que é uma marca de café do Himalaia',
-                  isCorrect: false,
-                  isSelected: false,
-                ),
-                AnswerWidget(
-                  answer:
-                      'Possibilita a criação de desktops que são muito incríveis',
-                  isCorrect: false,
-                  isSelected: true,
-                ),
-              ],
-            )
+              children: widget.question.answers
+                  .map(
+                    (answer) => AnswerWidget(
+                      answer: answer,
+                      onTap: () {
+                        selectedIndex = answers.indexOf(answer);
+
+                        widget.onChange(answer.isCorrect);
+
+                        setState(() {});
+                      },
+                      isDisabled: selectedIndex != -1,
+                      isSelected: answers.indexOf(answer) == selectedIndex,
+                    ),
+                  )
+                  .toList(),
+            ),
           ],
         ),
       ),

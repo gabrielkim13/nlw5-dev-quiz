@@ -63,6 +63,18 @@ class NextButtonWidget extends StatelessWidget {
           fontWeight: FontWeight.w600,
         );
 
+  NextButtonWidget.purple({
+    required this.text,
+    required this.onTap,
+  })  : this.color = AppColors.purple,
+        this.borderColor = AppColors.purple,
+        this.overlayColor = AppColors.darkerPurple,
+        this.textStyle = GoogleFonts.notoSans(
+          color: AppColors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        );
+
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -1,4 +1,5 @@
 import 'package:DevQuiz/challenge/challenge_controller.dart';
+import 'package:DevQuiz/result/result_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:DevQuiz/challenge/widgets/next_button/next_button_widget.dart';
@@ -7,9 +8,15 @@ import 'package:DevQuiz/challenge/widgets/quiz/quiz_widget.dart';
 import 'package:DevQuiz/shared/models/question_model.dart';
 
 class ChallengePage extends StatefulWidget {
+  final String title;
+
   final List<QuestionModel> questions;
 
-  const ChallengePage({Key? key, required this.questions}) : super(key: key);
+  const ChallengePage({
+    Key? key,
+    required this.title,
+    required this.questions,
+  }) : super(key: key);
 
   @override
   _ChallengePageState createState() => _ChallengePageState();
@@ -32,6 +39,25 @@ class _ChallengePageState extends State<ChallengePage> {
     });
 
     super.initState();
+  }
+
+  Future<void> navigate(int currentPage) async {
+    if (currentPage == widget.questions.length - 1)
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultPage(
+            title: widget.title,
+            correct: controller.score,
+            total: widget.questions.length,
+          ),
+        ),
+      );
+    else
+      await pageController.nextPage(
+        duration: Duration(milliseconds: 200),
+        curve: Curves.linear,
+      );
   }
 
   @override
@@ -87,10 +113,7 @@ class _ChallengePageState extends State<ChallengePage> {
                   child: NextButtonWidget.green(
                     text: 'Próximo',
                     onTap: () {
-                      pageController.nextPage(
-                        duration: Duration(milliseconds: 200),
-                        curve: Curves.linear,
-                      );
+                      navigate(pageController.page!.toInt());
                     },
                   ),
                 );
@@ -101,10 +124,7 @@ class _ChallengePageState extends State<ChallengePage> {
                   child: NextButtonWidget.red(
                     text: 'Próximo',
                     onTap: () {
-                      pageController.nextPage(
-                        duration: Duration(milliseconds: 200),
-                        curve: Curves.linear,
-                      );
+                      navigate(pageController.page!.toInt());
                     },
                   ),
                 );
@@ -114,10 +134,7 @@ class _ChallengePageState extends State<ChallengePage> {
                 child: NextButtonWidget.normal(
                   text: 'Pular',
                   onTap: () {
-                    pageController.nextPage(
-                      duration: Duration(milliseconds: 200),
-                      curve: Curves.linear,
-                    );
+                    navigate(pageController.page!.toInt());
                   },
                 ),
               );

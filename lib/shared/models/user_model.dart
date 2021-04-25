@@ -5,7 +5,7 @@ class UserModel {
 
   final String avatarUrl;
 
-  final int score;
+  final double score;
 
   UserModel({required this.name, required this.avatarUrl, this.score = 0});
 
